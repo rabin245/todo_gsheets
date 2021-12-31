@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'textbox.dart';
 import 'todo_provider.dart';
 import 'package:provider/provider.dart';
@@ -13,12 +14,52 @@ class MyTodoList extends StatelessWidget {
       child: ListView.builder(
         itemCount: todoProvider.currentTodos.length,
         itemBuilder: (context, index) {
-          return GestureDetector(
-            onLongPress: () {
-              // func test to delete a to-do
-              // print('this is working');
-              todoProvider.deleteTodo(index);
-            },
+          return Slidable(
+            // key: ValueKey(index),
+            endActionPane: ActionPane(
+              motion: const StretchMotion(),
+              // dismissible: DismissiblePane(onDismissed: () {}),
+              children: [
+                SlidableAction(
+                  onPressed: (context) async {
+                    await todoProvider.deleteTodo(index);
+                  },
+                  backgroundColor: Colors.red.shade700,
+                  foregroundColor: Colors.white,
+                  icon: Icons.delete_forever_rounded,
+                  label: 'Delete',
+                ),
+                SlidableAction(
+                  onPressed: (context) {},
+                  backgroundColor: Colors.grey,
+                  foregroundColor: Colors.white,
+                  icon: Icons.cancel,
+                  label: 'Cancel',
+                ),
+              ],
+            ),
+            startActionPane: ActionPane(
+              // dismissible: DismissiblePane(onDismissed: () {}),
+              motion: const StretchMotion(),
+              children: [
+                SlidableAction(
+                  onPressed: (context) {},
+                  backgroundColor: Colors.grey,
+                  foregroundColor: Colors.white,
+                  icon: Icons.cancel,
+                  label: 'Cancel',
+                ),
+                SlidableAction(
+                  onPressed: (context) async {
+                    await todoProvider.deleteTodo(index);
+                  },
+                  backgroundColor: Colors.red.shade700,
+                  foregroundColor: Colors.white,
+                  icon: Icons.delete_forever_rounded,
+                  label: 'Delete',
+                ),
+              ],
+            ),
             child: MyTextBox(
               title: todoProvider.currentTodos[index][0],
               isChecked:
