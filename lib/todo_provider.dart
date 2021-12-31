@@ -20,9 +20,11 @@ class TodoProvider extends ChangeNotifier {
     await countRows();
   }
 
-  bool checkLoading() {
-    return loading;
-  }
+  // bool checkLoading() {
+  //   return loading;
+  // }
+
+  bool get checkLoading => loading;
 
   // void printCheck() {
   //   print('printCheck');
@@ -30,13 +32,26 @@ class TodoProvider extends ChangeNotifier {
   //   print(currentTodos);
   // }
 
-  // insert a new note
-  Future insert(String note) async {
-    if (_worksheet == null) return;
-    numberOfTodos++;
-    currentTodos.add([note, 0]);
-    await _worksheet!.values.appendRow([note, 0]);
+  // bool inputIsEmpty() {
+  //   return inputController.text == '';
+  // }
+
+  void clearInputController() {
+    inputController.clear();
     notifyListeners();
+  }
+
+  // insert a new note
+  Future insert() async {
+    if (inputController.text != '') {
+      String todo = inputController.text;
+      if (_worksheet == null) return;
+      numberOfTodos++;
+      currentTodos.add([todo, 0]);
+      inputController.clear();
+      await _worksheet!.values.appendRow([todo, 0]);
+      notifyListeners();
+    }
   }
 
   // count the number of notes

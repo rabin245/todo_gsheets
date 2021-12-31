@@ -14,25 +14,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final TextEditingController _controller = TextEditingController();
-
   @override
   void initState() {
     super.initState();
     context.read<TodoProvider>().init();
-    _controller.addListener(() => setState(() {}));
   }
 
   void _post() async {
-    if (_controller.text != '') {
-      context.read<TodoProvider>().insert(_controller.text);
-    }
-
-    // context.read<TodoProvider>().printCheck();
-
-    setState(() {
-      _controller.clear();
-    });
+    context.read<TodoProvider>().insert();
   }
 
   // wait for the data to be fetched from google sheets
@@ -40,7 +29,7 @@ class _HomePageState extends State<HomePage> {
     Timer.periodic(
       const Duration(seconds: 1),
       (timer) {
-        if (context.read<TodoProvider>().checkLoading() == false) {
+        if (context.read<TodoProvider>().checkLoading == false) {
           setState(() {});
           timer.cancel();
         }
@@ -51,7 +40,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     // start loading until data is fetched
-    if (context.read<TodoProvider>().checkLoading() == true) {
+    if (context.read<TodoProvider>().checkLoading == true) {
       startLoading();
     }
     return Scaffold(
@@ -59,45 +48,45 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'POST NOTES',
+          'TODOS',
           style: TextStyle(color: Colors.grey[600]),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Column(
-        children: [
-          context.read<TodoProvider>().checkLoading()
-              ? const LoadingIndicator()
-              : const MyTodoList(),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: 'enter a note..',
-                    border: const OutlineInputBorder(),
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {
-                        setState(() {
-                          _controller.clear();
-                        });
-                      },
+      body: Consumer<TodoProvider>(
+        builder: (BuildContext context, todoProvider, child) => Column(
+          children: [
+            todoProvider.checkLoading
+                ? const LoadingIndicator()
+                : const MyTodoList(),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: 'enter a note..',
+                      border: const OutlineInputBorder(),
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          todoProvider.clearInputController();
+                        },
+                      ),
                     ),
+                    controller: todoProvider.inputController,
                   ),
-                  controller: _controller,
                 ),
-              ),
-              MyButton(
-                text: 'P O S T',
-                function: _post,
-              ),
-            ],
-          ),
-        ],
+                MyButton(
+                  text: 'P O S T',
+                  function: _post,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
