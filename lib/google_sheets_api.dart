@@ -32,52 +32,5 @@ class GoogleSheetsApi {
   Future init() async {
     final ss = await _gsheets.spreadsheet(_spreadsheetId);
     worksheet = ss.worksheetByTitle('todosheet');
-    // print(numberOfNotes);
-    // print(currentNotes);
-    // countRows();
   }
-  //
-  // // insert a new note
-  // static Future insert(String note) async {
-  //   if (_worksheet == null) return;
-  //   numberOfTodos++;
-  //   currentTodos.add([note, 0]);
-  //   await _worksheet!.values.appendRow([note, 0]);
-  // }
-  //
-  // // count the number of notes
-  // static Future countRows() async {
-  //   while (
-  //       (await _worksheet!.values.value(column: 1, row: numberOfTodos + 1)) !=
-  //           '') {
-  //     numberOfTodos++;
-  //   }
-  //   // print(numberOfNotes);
-  //   // print(currentNotes);
-  //
-  //   //  now we know how many notes to load, now load them
-  //   loadNotes();
-  // }
-  //
-  // // load existing notes from the sheet
-  // static Future loadNotes() async {
-  //   if (_worksheet == null) return;
-  //
-  //   for (int i = 0; i < numberOfTodos; i++) {
-  //     final String newNote =
-  //         await _worksheet!.values.value(column: 1, row: i + 1);
-  //     final int newComplete =
-  //         int.parse(await _worksheet!.values.value(column: 2, row: i + 1));
-  //     if (currentTodos.length < numberOfTodos) {
-  //       currentTodos.add([newNote, newComplete]);
-  //     }
-  //   }
-  //   loading = false;
-  //   // print(numberOfNotes);
-  //   // print(currentNotes);
-  // }
-  //
-  // static Future update(int index, int isTaskCompleted) async {
-  //   _worksheet!.values.insertValue(isTaskCompleted, column: 2, row: index + 1);
-  // }
 }

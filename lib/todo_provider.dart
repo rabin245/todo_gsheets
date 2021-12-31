@@ -11,6 +11,8 @@ class TodoProvider extends ChangeNotifier {
   List<List<dynamic>> currentTodos = [];
   bool loading = true;
 
+  TextEditingController inputController = TextEditingController();
+
   Future init() async {
     if (_worksheet == null) {
       print('worksheet is null!');
@@ -22,11 +24,11 @@ class TodoProvider extends ChangeNotifier {
     return loading;
   }
 
-  void printCheck() {
-    print('printCheck');
-    print(numberOfTodos);
-    print(currentTodos);
-  }
+  // void printCheck() {
+  //   print('printCheck');
+  //   print(numberOfTodos);
+  //   print(currentTodos);
+  // }
 
   // insert a new note
   Future insert(String note) async {
@@ -44,8 +46,6 @@ class TodoProvider extends ChangeNotifier {
             '') {
       numberOfTodos++;
     }
-    // print(numberOfNotes);
-    // print(currentNotes);
 
     //  now we know how many notes to load, now load them
     await loadNotes();
@@ -66,8 +66,6 @@ class TodoProvider extends ChangeNotifier {
     }
     loading = false;
     notifyListeners();
-    // print(numberOfNotes);
-    // print(currentNotes);
   }
 
   Future update(int index, bool? isTaskCompleted) async {

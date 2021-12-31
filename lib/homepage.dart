@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:todo_gsheets/list_of_todo.dart';
 import 'button.dart';
-import 'google_sheets_api.dart';
 import 'loading_indicator.dart';
 import 'todo_provider.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +28,8 @@ class _HomePageState extends State<HomePage> {
       context.read<TodoProvider>().insert(_controller.text);
     }
 
-    context.read<TodoProvider>().printCheck();
+    // context.read<TodoProvider>().printCheck();
+
     setState(() {
       _controller.clear();
     });

@@ -22,7 +22,7 @@ class MyButton extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             child: Text(
               text,
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
           ),
         ),
