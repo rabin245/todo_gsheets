@@ -91,4 +91,13 @@ class TodoProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future deleteTodo(int index) async {
+    currentTodos.removeAt(index);
+    numberOfTodos = currentTodos.length;
+    // worksheet
+    await _worksheet!.deleteRow(index + 1); // row starts from 1
+
+    notifyListeners();
+  }
 }
