@@ -4,6 +4,8 @@ import 'package:todo_gsheets/list_of_todo.dart';
 import 'button.dart';
 import 'google_sheets_api.dart';
 import 'loading_indicator.dart';
+import 'todo_provider.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -18,13 +20,16 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    context.read<TodoProvider>().init();
     _controller.addListener(() => setState(() {}));
   }
 
   void _post() async {
-    await GoogleSheetsApi.insert(_controller.text);
+    if (_controller.text != '') {
+      context.read<TodoProvider>().insert(_controller.text);
+    }
 
-    print(GoogleSheetsApi.currentNotes);
+    context.read<TodoProvider>().printCheck();
     setState(() {
       _controller.clear();
     });
@@ -35,7 +40,7 @@ class _HomePageState extends State<HomePage> {
     Timer.periodic(
       const Duration(seconds: 1),
       (timer) {
-        if (GoogleSheetsApi.loading == false) {
+        if (context.read<TodoProvider>().checkLoading() == false) {
           setState(() {});
           timer.cancel();
         }
@@ -46,7 +51,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     // start loading until data is fetched
-    if (GoogleSheetsApi.loading == true) {
+    if (context.read<TodoProvider>().checkLoading() == true) {
       startLoading();
     }
     return Scaffold(
@@ -62,7 +67,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: [
-          GoogleSheetsApi.loading
+          context.read<TodoProvider>().checkLoading()
               ? const LoadingIndicator()
               : const MyTodoList(),
           Column(

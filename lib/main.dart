@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'google_sheets_api.dart';
 import 'homepage.dart';
+import 'todo_provider.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  GoogleSheetsApi().init();
+  await GoogleSheetsApi().init();
 
   runApp(const MyApp());
 }
@@ -18,9 +20,12 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.deepPurple,
-        // brightness: Brightness.dark,
       ),
-      home: HomePage(),
+      home: ChangeNotifierProvider<TodoProvider>(
+        create: (context) => TodoProvider(wsheet: GoogleSheetsApi.worksheet),
+        child: const HomePage(),
+      ),
+      // home: const HomePage(),
     );
   }
 }

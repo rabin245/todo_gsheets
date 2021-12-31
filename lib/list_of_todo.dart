@@ -1,32 +1,26 @@
 import 'package:flutter/material.dart';
-import 'google_sheets_api.dart';
 import 'textbox.dart';
+import 'todo_provider.dart';
+import 'package:provider/provider.dart';
 
-class MyTodoList extends StatefulWidget {
+class MyTodoList extends StatelessWidget {
   const MyTodoList({Key? key}) : super(key: key);
 
   @override
-  _MyTodoListState createState() => _MyTodoListState();
-}
-
-class _MyTodoListState extends State<MyTodoList> {
-  @override
   Widget build(BuildContext context) {
+    var todoProvider = context.watch<TodoProvider>();
     return Expanded(
       child: ListView.builder(
-        itemCount: GoogleSheetsApi.currentNotes.length,
+        itemCount: todoProvider.currentTodos.length,
         itemBuilder: (context, index) {
-          return CheckboxListTile(
-            value: GoogleSheetsApi.currentNotes[index][1] == 0 ? false : true,
-            onChanged: (newValue) {
-              GoogleSheetsApi.update(index, newValue == false ? 0 : 1);
-              setState(() {
-                GoogleSheetsApi.currentNotes[index][1] =
-                    (newValue == false ? 0 : 1);
-              });
-            },
-            title: Text(GoogleSheetsApi.currentNotes[index][0]),
-          );
+          // return MyTextBox(
+          //   title: todoProvider.currentTodos[index][0],
+          //   isChecked: todoProvider.currentTodos[index][1] == 0 ? false : true,
+          //   onTap: (newValue) {
+          //     todoProvider.update(index, newValue == false ? 0 : 1);
+          //   },
+          // );
+          return MyTextBox(index: index);
         },
       ),
     );
