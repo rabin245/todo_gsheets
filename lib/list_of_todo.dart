@@ -10,64 +10,17 @@ class MyTodoList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var todoProvider = context.watch<TodoProvider>();
+
     return Expanded(
       child: ListView.builder(
-        itemCount: todoProvider.currentTodos.length,
+        itemCount: todoProvider.currentTodosLength,
         itemBuilder: (context, index) {
           return Slidable(
-            // key: ValueKey(index),
-            endActionPane: ActionPane(
-              motion: const StretchMotion(),
-              // dismissible: DismissiblePane(onDismissed: () {}),
-              children: [
-                SlidableAction(
-                  onPressed: (context) async {
-                    await todoProvider.deleteTodo(index);
-                  },
-                  backgroundColor: Colors.red.shade700,
-                  foregroundColor: Colors.white,
-                  icon: Icons.delete_forever_rounded,
-                  label: 'Delete',
-                ),
-                SlidableAction(
-                  onPressed: (context) {
-                    showEditPopUp(context, index, todoProvider);
-                  },
-                  backgroundColor: Colors.lightGreen,
-                  foregroundColor: Colors.white,
-                  icon: Icons.edit,
-                  label: 'Edit',
-                ),
-              ],
-            ),
-            startActionPane: ActionPane(
-              // dismissible: DismissiblePane(onDismissed: () {}),
-              motion: const StretchMotion(),
-              children: [
-                SlidableAction(
-                  onPressed: (context) {
-                    showEditPopUp(context, index, todoProvider);
-                  },
-                  backgroundColor: Colors.lightGreen,
-                  foregroundColor: Colors.white,
-                  icon: Icons.edit,
-                  label: 'Edit',
-                ),
-                SlidableAction(
-                  onPressed: (context) async {
-                    await todoProvider.deleteTodo(index);
-                  },
-                  backgroundColor: Colors.red.shade700,
-                  foregroundColor: Colors.white,
-                  icon: Icons.delete_forever_rounded,
-                  label: 'Delete',
-                ),
-              ],
-            ),
+            endActionPane: buildActionPane(todoProvider, index, false),
+            startActionPane: buildActionPane(todoProvider, index, true),
             child: MyTextBox(
-              title: todoProvider.currentTodos[index][0],
-              isChecked:
-                  todoProvider.currentTodos[index][1] == 0 ? false : true,
+              title: todoProvider.getCurrentTodoTitle(index),
+              isChecked: todoProvider.getCurrentTodoIsCompleted(index),
               onTap: (newValue) {
                 todoProvider.update(index, newValue);
               },
@@ -78,18 +31,44 @@ class MyTodoList extends StatelessWidget {
     );
   }
 
+  ActionPane buildActionPane(
+      TodoProvider todoProvider, int index, bool reversed) {
+    List<SlidableAction> actions = [
+      SlidableAction(
+        onPressed: (context) async {
+          await todoProvider.deleteTodo(index);
+        },
+        backgroundColor: Colors.red.shade700,
+        foregroundColor: Colors.white,
+        icon: Icons.delete_forever_rounded,
+        label: 'Delete',
+      ),
+      SlidableAction(
+        onPressed: (context) {
+          showEditPopUp(context, index, todoProvider);
+        },
+        backgroundColor: Colors.lightGreen,
+        foregroundColor: Colors.white,
+        icon: Icons.edit,
+        label: 'Edit',
+      ),
+    ];
+    return ActionPane(
+      motion: const StretchMotion(),
+      children: reversed ? actions.reversed.toList() : actions,
+    );
+  }
+
   void showEditPopUp(context, index, todoProvider) {
     TextEditingController textController = TextEditingController();
-    textController.text = todoProvider.currentTodos[index][0];
+    textController.text = todoProvider.getCurrentTodoTitle(index);
     showDialog(
-      barrierDismissible: true,
       context: context,
       builder: (context) => SimpleDialog(
-        contentPadding: EdgeInsets.all(10),
-        title: Text('Edit Todo'),
+        contentPadding: const EdgeInsets.all(10),
+        title: const Text('Edit Todo'),
         children: [
           TextField(
-            decoration: InputDecoration(),
             autofocus: true,
             controller: textController,
           ),
@@ -98,7 +77,10 @@ class MyTodoList extends StatelessWidget {
               todoProvider.editTodo(index, textController.text);
               Navigator.of(context).pop();
             },
-            child: Text('Edit'),
+            child: const Text(
+              'Edit',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
           ),
         ],
       ),

@@ -7,49 +7,44 @@ class TodoProvider extends ChangeNotifier {
   Worksheet? wsheet;
   final Worksheet? _worksheet;
 
-  int numberOfTodos = 0;
-  List<List<dynamic>> currentTodos = [];
-  bool loading = true;
+  int _numberOfTodos = 0;
+  final List<List<dynamic>> _currentTodos = [];
+  bool _loading = true;
 
-  TextEditingController inputController = TextEditingController();
+  final TextEditingController _inputController = TextEditingController();
 
-  TextEditingController get returnInputController => inputController;
   Future init() async {
     if (_worksheet == null) {
       print('worksheet is null!');
+      return;
     }
     await countRows();
   }
 
-  // bool checkLoading() {
-  //   return loading;
-  // }
+  TextEditingController get returnInputController => _inputController;
 
-  bool get checkLoading => loading;
+  int get currentTodosLength => _currentTodos.length;
 
-  // void printCheck() {
-  //   print('printCheck');
-  //   print(numberOfTodos);
-  //   print(currentTodos);
-  // }
+  String getCurrentTodoTitle(index) => _currentTodos[index][0];
 
-  // bool inputIsEmpty() {
-  //   return inputController.text == '';
-  // }
+  bool getCurrentTodoIsCompleted(index) =>
+      _currentTodos[index][1] == 0 ? false : true;
+
+  bool get checkLoading => _loading;
 
   void clearInputController() {
-    inputController.clear();
+    _inputController.clear();
     notifyListeners();
   }
 
   // insert a new note
   Future insert() async {
-    if (inputController.text != '') {
-      String todo = inputController.text;
+    if (_inputController.text != '') {
+      String todo = _inputController.text;
       if (_worksheet == null) return;
-      numberOfTodos++;
-      currentTodos.add([todo, 0]);
-      inputController.clear();
+      _numberOfTodos++;
+      _currentTodos.add([todo, 0]);
+      _inputController.clear();
       await _worksheet!.values.appendRow([todo, 0]);
       notifyListeners();
     }
@@ -58,9 +53,9 @@ class TodoProvider extends ChangeNotifier {
   // count the number of notes
   Future countRows() async {
     while (
-        (await _worksheet!.values.value(column: 1, row: numberOfTodos + 1)) !=
+        (await _worksheet!.values.value(column: 1, row: _numberOfTodos + 1)) !=
             '') {
-      numberOfTodos++;
+      _numberOfTodos++;
     }
 
     //  now we know how many notes to load, now load them
@@ -71,31 +66,31 @@ class TodoProvider extends ChangeNotifier {
   Future loadNotes() async {
     if (_worksheet == null) return;
 
-    for (int i = 0; i < numberOfTodos; i++) {
+    for (int i = 0; i < _numberOfTodos; i++) {
       final String newNote =
           await _worksheet!.values.value(column: 1, row: i + 1);
       final int newComplete =
           int.parse(await _worksheet!.values.value(column: 2, row: i + 1));
-      if (currentTodos.length < numberOfTodos) {
-        currentTodos.add([newNote, newComplete]);
+      if (_currentTodos.length < _numberOfTodos) {
+        _currentTodos.add([newNote, newComplete]);
       }
     }
-    loading = false;
+    _loading = false;
     notifyListeners();
   }
 
   Future update(int index, bool? isTaskCompleted) async {
     if (isTaskCompleted != null) {
-      currentTodos[index][1] = isTaskCompleted ? 1 : 0;
+      _currentTodos[index][1] = isTaskCompleted ? 1 : 0;
       _worksheet!.values
-          .insertValue(currentTodos[index][1], column: 2, row: index + 1);
+          .insertValue(_currentTodos[index][1], column: 2, row: index + 1);
       notifyListeners();
     }
   }
 
   Future deleteTodo(int index) async {
-    currentTodos.removeAt(index);
-    numberOfTodos = currentTodos.length;
+    _currentTodos.removeAt(index);
+    _numberOfTodos = _currentTodos.length;
     // worksheet
     await _worksheet!.deleteRow(index + 1); // row starts from 1
 
@@ -103,11 +98,8 @@ class TodoProvider extends ChangeNotifier {
   }
 
   Future editTodo(int index, String text) async {
-    // print(currentTodos[index]); //0
-    currentTodos[index][0] = text;
-    // print(currentTodos[index]);
-
-    await _worksheet!.values.insertRow(index + 1, currentTodos[index]); //1
+    _currentTodos[index][0] = text;
+    await _worksheet!.values.insertRow(index + 1, _currentTodos[index]);
     notifyListeners();
   }
 }

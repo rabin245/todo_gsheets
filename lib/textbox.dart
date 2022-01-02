@@ -10,7 +10,7 @@ class MyTextBox extends StatelessWidget {
 
   final String title;
   final bool isChecked;
-  final onTap;
+  final dynamic onTap;
 
   @override
   Widget build(BuildContext context) {
