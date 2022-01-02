@@ -46,6 +46,15 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: Colors.grey[400],
       appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () async {
+              //  edit
+              await context.read<TodoProvider>().editTodo(6, 'edit test');
+            },
+            icon: Icon(Icons.edit),
+          ),
+        ],
         centerTitle: true,
         title: Text(
           'TODOS',

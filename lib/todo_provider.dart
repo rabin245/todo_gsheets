@@ -13,6 +13,7 @@ class TodoProvider extends ChangeNotifier {
 
   TextEditingController inputController = TextEditingController();
 
+  TextEditingController get returnInputController => inputController;
   Future init() async {
     if (_worksheet == null) {
       print('worksheet is null!');
@@ -98,6 +99,15 @@ class TodoProvider extends ChangeNotifier {
     // worksheet
     await _worksheet!.deleteRow(index + 1); // row starts from 1
 
+    notifyListeners();
+  }
+
+  Future editTodo(int index, String text) async {
+    // print(currentTodos[index]); //0
+    currentTodos[index][0] = text;
+    // print(currentTodos[index]);
+
+    await _worksheet!.values.insertRow(index + 1, currentTodos[index]); //1
     notifyListeners();
   }
 }

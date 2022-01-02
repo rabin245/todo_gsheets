@@ -30,11 +30,13 @@ class MyTodoList extends StatelessWidget {
                   label: 'Delete',
                 ),
                 SlidableAction(
-                  onPressed: (context) {},
-                  backgroundColor: Colors.grey,
+                  onPressed: (context) {
+                    showEditPopUp(context, index, todoProvider);
+                  },
+                  backgroundColor: Colors.lightGreen,
                   foregroundColor: Colors.white,
-                  icon: Icons.cancel,
-                  label: 'Cancel',
+                  icon: Icons.edit,
+                  label: 'Edit',
                 ),
               ],
             ),
@@ -43,11 +45,13 @@ class MyTodoList extends StatelessWidget {
               motion: const StretchMotion(),
               children: [
                 SlidableAction(
-                  onPressed: (context) {},
-                  backgroundColor: Colors.grey,
+                  onPressed: (context) {
+                    showEditPopUp(context, index, todoProvider);
+                  },
+                  backgroundColor: Colors.lightGreen,
                   foregroundColor: Colors.white,
-                  icon: Icons.cancel,
-                  label: 'Cancel',
+                  icon: Icons.edit,
+                  label: 'Edit',
                 ),
                 SlidableAction(
                   onPressed: (context) async {
@@ -70,6 +74,33 @@ class MyTodoList extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+
+  void showEditPopUp(context, index, todoProvider) {
+    TextEditingController textController = TextEditingController();
+    textController.text = todoProvider.currentTodos[index][0];
+    showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (context) => SimpleDialog(
+        contentPadding: EdgeInsets.all(10),
+        title: Text('Edit Todo'),
+        children: [
+          TextField(
+            decoration: InputDecoration(),
+            autofocus: true,
+            controller: textController,
+          ),
+          ElevatedButton(
+            onPressed: () {
+              todoProvider.editTodo(index, textController.text);
+              Navigator.of(context).pop();
+            },
+            child: Text('Edit'),
+          ),
+        ],
       ),
     );
   }
