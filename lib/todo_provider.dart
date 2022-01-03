@@ -2,26 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:gsheets/gsheets.dart';
 
 class TodoProvider extends ChangeNotifier {
-  TodoProvider({this.wsheet}) : _worksheet = wsheet;
+  TodoProvider(this._worksheet);
 
-  Worksheet? wsheet;
   final Worksheet? _worksheet;
 
   int _numberOfTodos = 0;
   final List<List<dynamic>> _currentTodos = [];
   bool _loading = true;
 
-  final TextEditingController _inputController = TextEditingController();
-
   Future init() async {
     if (_worksheet == null) {
       print('worksheet is null!');
       return;
     }
-    await countRows();
+    countRows();
   }
-
-  TextEditingController get returnInputController => _inputController;
 
   int get currentTodosLength => _currentTodos.length;
 
@@ -32,22 +27,13 @@ class TodoProvider extends ChangeNotifier {
 
   bool get checkLoading => _loading;
 
-  void clearInputController() {
-    _inputController.clear();
-    notifyListeners();
-  }
-
   // insert a new note
-  Future insert() async {
-    if (_inputController.text != '') {
-      String todo = _inputController.text;
-      if (_worksheet == null) return;
-      _numberOfTodos++;
-      _currentTodos.add([todo, 0]);
-      _inputController.clear();
-      await _worksheet!.values.appendRow([todo, 0]);
-      notifyListeners();
-    }
+  Future insert(String todo) async {
+    if (_worksheet == null) return;
+    _numberOfTodos++;
+    _currentTodos.add([todo, 0]);
+    await _worksheet!.values.appendRow([todo, 0]);
+    notifyListeners();
   }
 
   // count the number of notes

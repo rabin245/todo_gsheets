@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.deepPurple,
       ),
       home: ChangeNotifierProvider<TodoProvider>(
-        create: (context) => TodoProvider(wsheet: GoogleSheetsApi.worksheet),
+        create: (context) => TodoProvider(GoogleSheetsApi.worksheet),
         child: const HomePage(),
       ),
       // home: const HomePage(),

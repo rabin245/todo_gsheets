@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:todo_gsheets/list_of_todo.dart';
 import 'button.dart';
@@ -14,6 +13,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final TextEditingController _inputController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -21,28 +22,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _post() async {
-    context.read<TodoProvider>().insert();
-  }
-
-  // wait for the data to be fetched from google sheets
-  void startLoading() {
-    Timer.periodic(
-      const Duration(seconds: 1),
-      (timer) {
-        if (context.read<TodoProvider>().checkLoading == false) {
-          setState(() {});
-          timer.cancel();
-        }
-      },
-    );
+    if (_inputController.text != '') {
+      context.read<TodoProvider>().insert(_inputController.text);
+      _inputController.clear();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // start loading until data is fetched
-    if (context.read<TodoProvider>().checkLoading == true) {
-      startLoading();
-    }
     return Scaffold(
       backgroundColor: Colors.grey[400],
       appBar: AppBar(
@@ -72,11 +59,11 @@ class _HomePageState extends State<HomePage> {
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.clear),
                         onPressed: () {
-                          todoProvider.clearInputController();
+                          _inputController.clear();
                         },
                       ),
                     ),
-                    controller: todoProvider.returnInputController,
+                    controller: _inputController,
                   ),
                 ),
                 MyButton(

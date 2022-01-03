@@ -22,12 +22,6 @@ class GoogleSheetsApi {
   static final _gsheets = GSheets(_credentials);
   static Worksheet? worksheet;
 
-  // variables to keep track of notes
-  static int numberOfTodos = 0;
-  static List<List<dynamic>> currentTodos = [];
-
-  static bool loading = true;
-
   //  initialize the spreadsheet
   Future init() async {
     final ss = await _gsheets.spreadsheet(_spreadsheetId);

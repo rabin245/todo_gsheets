@@ -72,15 +72,31 @@ class MyTodoList extends StatelessWidget {
             autofocus: true,
             controller: textController,
           ),
-          ElevatedButton(
-            onPressed: () {
-              todoProvider.editTodo(index, textController.text);
-              Navigator.of(context).pop();
-            },
-            child: const Text(
-              'Edit',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  todoProvider.editTodo(index, textController.text);
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  'Edit',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ),
+              const SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
           ),
         ],
       ),
