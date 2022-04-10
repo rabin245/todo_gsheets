@@ -18,14 +18,18 @@ class MyTextBox extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey[200],
+          color: Colors.grey[800],
           borderRadius: BorderRadius.circular(6),
         ),
         padding: const EdgeInsets.all(4),
         child: CheckboxListTile(
+          activeColor: Colors.deepPurple,
           value: isChecked,
           onChanged: onTap,
-          title: Text(title),
+          title: Text(
+            title,
+            style: const TextStyle(fontSize: 18),
+          ),
         ),
       ),
     );

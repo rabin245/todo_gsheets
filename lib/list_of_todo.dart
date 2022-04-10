@@ -38,7 +38,7 @@ class MyTodoList extends StatelessWidget {
         onPressed: (context) async {
           await todoProvider.deleteTodo(index);
         },
-        backgroundColor: Colors.red.shade700,
+        backgroundColor: Colors.red.shade900,
         foregroundColor: Colors.white,
         icon: Icons.delete_forever_rounded,
         label: 'Delete',
@@ -47,7 +47,7 @@ class MyTodoList extends StatelessWidget {
         onPressed: (context) {
           showEditPopUp(context, index, todoProvider);
         },
-        backgroundColor: Colors.lightGreen,
+        backgroundColor: Colors.green,
         foregroundColor: Colors.white,
         icon: Icons.edit,
         label: 'Edit',

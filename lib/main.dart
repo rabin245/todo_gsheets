@@ -19,13 +19,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+        colorScheme: const ColorScheme.dark(
+          primary: Colors.deepPurple,
+          onPrimary: Colors.white,
+          secondary: Colors.deepPurple,
+          onSecondary: Colors.white,
+        ),
       ),
       home: ChangeNotifierProvider<TodoProvider>(
         create: (context) => TodoProvider(GoogleSheetsApi.worksheet),
         child: const HomePage(),
       ),
-      // home: const HomePage(),
     );
   }
 }
